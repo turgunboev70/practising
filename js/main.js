@@ -6,23 +6,25 @@ const tasks = document.querySelector("#tasks")
 form.addEventListener("submit", e => {
     e.preventDefault()
     let arr = JSON.parse(localStorage.getItem("tasks")) ? JSON.parse(localStorage.getItem("tasks")) : []
-    let obj = {
-        id: arr.length > 0 ? arr[arr.length - 1].id + 1 : 0,
-        task: input.value
+    if (input.value.trim() !== "") {
+        let obj = {
+            id: arr.length > 0 ? arr[arr.length - 1].id + 1 : 0,
+            task: input.value
+        }
+        arr.push(obj)
+        localStorage.setItem("tasks", JSON.stringify(arr))
+    } else {
+        alert("write something")
     }
-    let res = Object.keys(arr) 
-    let javob = res.filter(num => num != obj.id) 
-    arr.push(obj)
-    localStorage.setItem("tasks", JSON.stringify(arr))
     render()
-    // console.log(res);
 })
 
 function render() {
+    tasks.innerHTML = "";
     let arr = JSON.parse(localStorage.getItem("tasks")) || []
 
     arr.forEach(text => {
-        // console.log(text);
+        input.value = ""
         const task = document.createElement("div")
         task.classList.add("task")
 
@@ -52,7 +54,6 @@ function render() {
         task.append(content, actions)
         tasks.append(task)
 
-        input.value = ""
 
         edit.addEventListener("click", e => {
             if (edit.innerHTML.toLocaleLowerCase() == "edit") {
@@ -69,7 +70,6 @@ function render() {
             tasks.removeChild(task)
             let arr = JSON.parse(localStorage.getItem("tasks"))
             let findIndex = arr.findIndex(data => data.id == e.target.dataset.taskId)
-            console.log(findIndex);
             arr.splice(findIndex, 1)
             localStorage.setItem("tasks", JSON.stringify(arr))
         })
